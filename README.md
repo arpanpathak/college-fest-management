@@ -20,7 +20,7 @@ python -m django --version
 
 
 ```python
-django-admin startproject TechtrixManager
+django-admin startproject TechTrixManager
 ```
 ### Running DataBase Migrations
 ```python
