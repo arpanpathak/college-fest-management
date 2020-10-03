@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<div class="table-responsive">
+<span class="count_result text-primary"></span>
+<div class="col-sm-12 col-lg-4 col-lg-offset-8" style="margin-bottom: 10px;  padding-bottom: 10px; position: relative;">
+	
+	<input type="text" class="form-control" id="search" >
+	<i class="fa fa-search" style="position: absolute; right: 20px; top: 8px;"></i>
+</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th> id </th>
+			<th> name </th>
+			<th> email </th>
+			<th> contact </th>
+			<th> college </th>
+			<th> fee paid </th>
+			<th> refferedBy </th>
+			<th> registered by </th>
+			<th>options</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for i in registrations %}
+
+		<tr class="candidate">
+		<td> {{ i.id }} </td>
+		<td> {{ i.name }} </td>
+		<td> {{ i.email }}</td>
+		<td> {{ i.contactNo }} </td>
+		<td> {{ i.college }} </td>
+		<td> {% if i.feePaid %} <i class="fa fa-check" style="color: green;"></i> {% endif %} </td>
+		<td> {% if i.refferedBy %}{{ i.refferedBy.name }} {% else %} N/A {% endif %} </td>
+		<td> {{ i.registeredBy.username }} </td>
+		<td>
+			<a href="admin/registration/candidate/{{i.id}}/"> 
+				<button type="button" class="btn btn-primary"><i class="fa fa-edit fas"></i> edit</button>
+			</a> 
+			
+		</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+<script>
+	
+$(function(){
+	$(".count_result").html($(".candidate:visible").length+" results found!" );
+	$("#search").on('keyup', function(){
+	  var search_text=$(this).val();
+	  $('.candidate').show().not(function(){
+	      return $(this).html().toLowerCase().indexOf(search_text.toLowerCase().trim())!==-1;
+	  }).hide();
+	  $(".count_result").html($(".candidate:visible").length+" search results!" );
+	});
+});
+</script>
+{% endblock %}

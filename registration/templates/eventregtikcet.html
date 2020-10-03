@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Ticket{% endblock %}
+
+ {% block navrightitem %}
+<li><a><i class="fa fa-inr"></i>&nbsp;{{money}}</a></li>
+<li><a><span class="glyphicon glyphicon-user"></span>&nbsp;{{user}}</a></li>
+     <li><a href="{% url 'registration:logout' %}">logout</a></li>
+                {% endblock %}
+{% block body %}
+{% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'site/css/font-awesome.min.css' %}">
+    <div class="panel panel-default">
+    <div class="panel-heading" style="background:  #2C3E50; color: #fff"><span class="latina"><span>TECH</span><span style="color: #FC971E;">TRIX</span></span>18</a> Registration Information </div>
+        <div class="panel-body printable">
+
+            <div><label> Registration ID:</label><span>{{ registratinid }}</span></div>
+            <div><label> Registered For: </label><span>{{ registeredevent }}</span></div>
+            <div><label> Registration Fee: </label><span>₹{{ regfee }}</span></div>
+        </div>
+    <div class="panel-footer">Give these info to participant
+    <br>
+        <a class=" btn btn-default right" href="{{ backurl }}">Go Back</a>
+        {% if registeredevent == "General Registration" %}
+        <a class="btn btn-danger" href="{%url 'registration:registrationslip' %}?id={{ registratinid }}&type=g"> print</a>
+        {% elif registeredevent != None %}
+        <a class="btn btn-danger" href="{%url 'registration:registrationslip' %}?id={{ registratinid }}&type=e"> print</a>
+        {% endif %}
+    </div>
+    </div>
+
+ <script>
+var elt = $('#id_participants');
+elt.tagsinput({
+  trimValue: true,
+  confirmKeys: [13, 44,32, 188]
+});
+
+
+elt.on('itemAdded', function(event) {
+$.ajax({
+  url: window.location.origin.concat('{% url 'registration:user' %}?id='.concat(event.item)),
+  dataType: 'json',
+  success: function(data){
+      $("span.tag:contains("+event.item+")").removeClass("label-info",1000,"easeInBack");
+    if(data.resp){
+    $("span.tag:contains("+event.item+")").addClass('label-success');
+    }
+    else{
+      $("span.tag:contains("+event.item+")").addClass('label-danger');
+    }
+  }
+});
+});
+
+$("#id_event").on('change', function (e) {
+    var optionSelected=$('option:selected', this);
+    var valueSelected=this.value;
+    console.log(valueSelected);
+    $.ajax({
+
+  url: window.location.origin.concat('/event/eventDet/'.concat(valueSelected)),
+  dataType: 'json',
+  success: function(data){
+    console.log(data.data.fees);
+    $('#eventinfo').html('<div class="label-info"><strong>Registration fees</strong>: ₹<span>'+data.data.fees+'</span>, <strong>Maximum Member</strong>: <span>'+data.data.maxParticipant+'</span></div>');
+{#    $("#id_event").select2({#}
+{#        maximumSelectionLength:data.data.maxParticipant#}
+{#    });#}
+  }
+});
+
+});
+
+function formValidation() {
+    if($('.bootstrap-tagsinput').find($('span.label-danger')).length==0){
+        return true;
+    }
+    $('#errormsg').text('One or more user ID is invalid');
+    return false;
+}
+
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Status{% endblock %}
+
+{% block body %}
+    {% load static %}
+    <script src="{% static 'site/js/highcharts.js' %}"></script>
+    <script src="{% static 'site/js/exporting.js' %}"></script>
+        {% load chartit %}
+ {{ charts|load_charts:"chart0, chart, chart2, chart3, chart4"}}
+<div class="panel-info">
+<div class="panel-body">
+    <h3 class="text-primary text-center">General Registration (₹ {{ genregmoney }}) + Event Registration (₹{{ eventregmoney }}) = Total (₹{{ totalmoney }})</h3>
+</div>
+</div>
+    <div class="row">
+        <div class="panel panel-default col-sm-6" style="box-shadow: 0 0 0 0 !important;">
+            <div id="chart"></div>
+        </div>
+        <div class="panel panel-default col-sm-6" style="box-shadow: 0 0 0 0 !important;">
+            <div id="chart2"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default col-sm-6" style="box-shadow: 0 0 0 !important;">
+            <div class="panel-heading">Registration Desk Status</div>
+            <div class="panel-body">
+                <div id="chart0"></div>
+            </div>
+
+        </div>
+        <div class="panel panel-default col-sm-6" style="box-shadow: 0 0 0 !important;">
+            <div class="panel-heading">Registration Desk Status</div>
+            <div class="panel-body">
+                <div id="chart4"></div>
+            </div>
+            
+        </div>
+
+        <div class="panel panel-default col-sm-12" style="box-shadow: 0 0 0 !important;">
+            <div class="panel-heading">College Status</div>
+            <div class="panel-body">
+                <div id="chart3"></div>
+            </div>
+
+        </div>
+        
+    </div>
+
+{% endblock %}

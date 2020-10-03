@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block body %}
+	<form class="col-sm-12 col-lg-offset-3 col-lg-6 row form-group hide-print" action="{% url 'registration:registrationslip'%}">
+		<div class="col-lg-3 ">
+			<!-- <label class="col-sm-3">id: </label> -->
+			<input class="form-control" placeholder="id" name="id" required="required" />
+		</div>
+		<div class="col-lg-6 ">
+			<select name="type" class="form-control">
+				<option value="g">GENERAL REGISTRATION</option>
+				<option value="e">EVENT REGISTRATION</option>
+			</select>
+		</div>
+		<button type="submit" class="btn btn-info col-lg-3">GET SLIP</button>
+
+	</div>
+	<div class="panel panel-default col-sm-12 col-lg-offset-3 col-lg-6 print-area" style="box-shadow: 1px 1px 1px lightgray !important;">
+		<div class="panel-heading" style="background: #fff !important; color: black !important; text-align: center;"> <span class="latina"><span>TECH</span><span style="color: #FC971E;">TRIX</span></span>18</a> REGISTRATION SLIP </div>
+		<div class="panel-body">
+			{% if  id != None and fields.id == None  %} <div class="alert alert-danger">not found!</div>{% endif %}
+			{% if e or g %}
+			<table class="table table-striped">
+				
+				<tr>
+					<td> Registration Type </td> <td> {% if g %} GENERAL REGISTRATION {% elif e %} EVENT REGISTRATION {% endif %}</td>
+				</tr>
+				<tr>
+					<td> Registration ID </td> <td> {{ id }}</td>
+				</tr>
+				{% if g %}
+				<tr>
+					<td> Candidate Name </td><td> {{ fields.name }} </td> 
+				</tr> 
+				<tr>
+					<td> Email </td><td> {{ fields.email }} </td> 
+				</tr> 
+				<tr>
+					<td> College </td><td> {{ fields.college.name }} </td> 
+				</tr> 
+				<tr>
+					<td> Contact No </td><td> {{ fields.contactNo }} </td> 
+				</tr> 
+				{% endif %}
+				{% if e %}
+				<tr>
+					<td>Event Name </td> <td> {{ fields.event.name }}</td>
+				</tr>
+				<tr>
+					<td>Team Name </td> <td> {{ fields.teamName }}</td>
+				</tr>
+				<tr style="background: #444; color: #fff"><td > <b> Team Member Details :- </b></td><td> </td> </tr>
+				{% for i in fields.participants.all %}
+					<tr> <td> GENERAL REGISTRATION ID :  {{ i.id }} </td><td> NAME : {{ i.name }}</td> </tr>
+					{% endfor %}
+
+				{% endif %}
+				<tr>
+					<td> Fee Paid </td><td> ₹ {{ fields.feePayable }}  </td> 
+				</tr> 
+				<tr style="background: #C6FBDE;">
+					<td> Registered By </td><td>  {{ fields.registeredBy.username }}  </td> 
+				</tr> 
+				
+			</table>
+			{% endif %}
+		</div>
+		<div class="panel-footer hide-print"> 
+		<button class="btn btn-danger right" onclick="window.print();" type="button">CLICK HERE TO PRINT</button>
+		</div>
+	</div>
+{% endblock %} 

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="table-responsive">
+<div class="col-sm-12 col-lg-4 col-lg-offset-8 search-box" style="margin-bottom: 10px;  padding-bottom: 10px; position: relative;">
+	<input type="text" class="form-control" id="search" >
+	<i class="fa fa-search" style="position: absolute; right: 20px; top: 8px; "></i>
+</div>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th> id </th>
+			<th> event_name </th>
+			<th> team name </th>
+			<th> team members id </th>
+			<th> fee paid </th>
+			<th> registered by </th>
+			<th>options</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for i in registrations %}
+
+		<tr class="candidate">
+		<td> {{ i.id }} </td>
+		<td> {{ i.event.name }} </td>
+		<td> {{ i.teamName }}</td>
+		
+		<td> 
+			
+			{% for j in i.participants.all %} 
+				<a style=" text-decoration: none; display: inline-block; padding-top: 5px; background: #3498DB; color: #fff;  text-align: center;
+				 border-radius: 6px; width: 35px; height: 35px;" href="admin/registration/candidate/{{j.id}}"> {{ j.id }}</a>
+			{% endfor %}
+		</td>
+		<td> {% if i.feePaid %} <i class="fa fa-check" style="color: green;"></i> {% endif %} </td>
+		<td> {{ i.registeredBy.username }} </td>
+		
+		<td>
+			<a href="admin/registration/eventregistration/{{i.id}}/"> 
+				<button type="button" class="btn btn-primary"><i class="fa fa-edit fas"></i> edit</button>
+			</a> 
+			
+		</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</div>
+<script>
+	
+$(function(){
+	$("#search").on('keyup', function(){
+	  var search_text=$(this).val();
+	  $('.candidate').show().not(function(){
+	      return $(this).html().toLowerCase().indexOf(search_text.toLowerCase().trim())!==-1;
+	  }).hide();
+
+	});
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}General Registration{% endblock %}
+
+{% block navrightitem %}
+  <li><a><i class="fa fa-inr"></i>&nbsp;{{money}}</a></li>
+  <li><a><span class="glyphicon glyphicon-user"></span>&nbsp;{{user}}</a></li>
+  <li><a href="{% url 'registration:logout' %}">logout</a></li>
+{% endblock %}
+
+{% block body %}
+{% load staticfiles %}
+    <script src="{% static 'site/js/bootstrap-tagsinput.js' %}"></script>
+    <script src="{% static 'site/js/select2.full.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'site/css/bootstrap-tagsinput.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/select2.min.css' %}">
+    <style>
+    
+    </style>
+<div class="col-sm-12 col-lg-6 col-lg-offset-3">
+<form class="form-horizontal center-block col-sm-12 col-lg-12 panel panel-default " method="POST"  action="{% url 'registration:generalreg'%}"
+ style="box-shadow: 0 8px 30px rgba(0,0,0,0.3);  padding: 0;  display: block; margin: 0 auto; "> 
+          {% csrf_token %}
+  <div class="panel-heading">GENERAL REGISTRATION</div>
+  <div class="panel-body" style="padding-top: 25px;">
+
+      {% for field in form %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            {% if field.errors %} <div id="errormsg"  class="alert alert-danger"> {{ field.errors }} </div> {% endif %}
+        </div>
+
+        <label class="control-label col-sm-2" style="text-align: left;">{{ field.label_tag }}</label>
+        <div class="col-sm-12">{{ field }}</div>
+    </div>
+{% endfor %}
+
+    <div class="form-group">
+
+
+      <div class="col-lg-10 col-lg-offset-2">
+
+          <div id="eventinfo" class="alert alert-info"><span >Registration Fee: ₹{{ fee }}</span></div>
+          <input type="submit" name="register" class="btn btn-primary btn-block" value="REGISTER">
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+ <script>
+ $(document).ready(function() {
+  $("#id_college").select2();
+  $("#id_refferedBy").select2();
+
+  $(".form-group:has(#id_others)").hide();
+  $('#id_college').on('change', function () {
+      if($('#id_college option:selected').html()=='Other')
+          $(".form-group:has(#id_others)").show();
+      else
+          $(".form-group:has(#id_others)").hide();
+  });
+  $("input[type=text],input[type=email]").addClass("col-sm-6 form-control");
+});
+</script>
+{% endblock %}

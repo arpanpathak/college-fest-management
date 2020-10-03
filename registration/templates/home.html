@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+ {% block navrightitem %}
+
+<li><a><span class="glyphicon glyphicon-user"></span>&nbsp;{{user}}</a></li>
+     <li><a href="{% url 'registration:logout' %}">logout</a></li>
+                {% endblock %}
+{% block body %}
+    <div class="row">
+    <div class="col-sm-6 row">
+        <div class="panel panel-default">
+                <div class="panel-heading" style="background:  #2C3E50; color: #fff" >Registration Desk Link</div>
+                <div    class="panel-body">
+                        <a class="alert alert-info link" href="{% url 'registration:eventreg'%}" target="__blank"><i class="fa fa-calendar"></i> Event Registration</a>
+                        <a class="alert alert-info link" href="{% url 'registration:generalreg'%}" target="__blank"><i class="fa fa-user-plus"></i>General Registration</a>
+                        <a class="alert alert-info link" href="{% url 'registration:listallregistrations'%}" target="__blank"><i class="fa fa-list-ul"></i> List all general registrations</a>
+
+                        <a class="alert alert-info link" href="{% url 'registration:eventreglist' %}" target="__blank"><i class="fa fa-list-ul"></i> List all event registrations</a>
+
+                        <a class="alert alert-info link" href="{% url 'registration:registrationslip'%}" target="__blank"><i class="fa fa-print"></i> Print Slip</a>
+                        
+                </div>
+            </div>
+        
+        <div class="panel panel-default" >
+                <div class="panel-heading" style="background: #2C3E50; color: #fff">Admin</div>
+                <div    class="panel-body">
+                        <a href="{% url 'status'%}" class="alert alert-info link" target="__blank"><i class="fa fa-pie-chart"></i> REGISTRATION AND MONEY STATISTICS </a>
+                        <a class="alert alert-info link" href="{% url 'admin:index'%}" target="__blank"><i class="fa fa-user-secret"></i> Administrative Dashboard</a>
+
+                </div>
+        </div>
+        
+    </div>
+
+        <div class="col-sm-6">
+
+            <div class="panel  panel-default">
+                <div class="panel-heading" style="background: #2C3E50; color: #fff">Add Result ( for event coordinators )</div>
+                <div    class="panel-body" style="max-height: calc(100vh - 187px); min-height: 100%; overflow-y: auto;">
+                    <div style="margin-bottom: 10px; border-bottom: 2px solid #2C3E50;; padding-bottom: 10px; position: relative;">
+                        <input type="text" class="form-control" id="search"/>
+                        <i class="fa fa-search" style="position: absolute; right: 5px; top: 8px;"></i>
+                    </div>
+                    <div id="search-results">
+                        {% for event in eventsubmission %}
+                            <a class="alert alert-info link event" href="{% url 'registration:scoreSub' event.pk %}" target="__blank"><i class="fa fa-list-ul"></i> {{ event.name }}</a>
+                        {% endfor %}
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $("#search").on('keyup', function(){
+          var search_text=$(this).val();
+          $('.event').show().not(function(){
+              return $(this).html().toLowerCase().indexOf(search_text.toLowerCase().trim())!==-1;
+          }).hide();
+        });
+    </script>
+{% endblock %}

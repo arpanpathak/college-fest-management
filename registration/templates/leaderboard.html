@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Score Submission{% endblock %}
+
+ {% block navrightitem %}
+
+<li><a href="{% url 'registration:scoreSub' event %}">Score Submission</a></li>
+     <li><a><span class="glyphicon glyphicon-user"></span>&nbsp;{{user}}</a></li>
+     <li><a href="{% url 'registration:logout' %}">logout</a></li>
+                {% endblock %}
+{% block body %}
+{% load staticfiles %}
+    <script src="{% static 'site/js/bootstrap-tagsinput.js' %}"></script>
+    <script src="{% static 'site/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'site/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'site/js/dataTables.bootstrap.min.js' %}"></script>
+
+        <link rel="stylesheet" href="{% static 'site/css/bootstrap-tagsinput.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/select2.min.css' %}">
+    <h1 class="text-primary">{{ eventName }}</h1>
+{% load django_tables2 %}
+{% render_table table %}
+
+ <script>
+ $(document).ready(function() {
+  $("#id_team").select2();
+ $('#leaderboard').DataTable();
+ }
+);
+
+
+
+ $("#id_team").on('change', function (e) {
+    var optionSelected=$('option:selected',this);
+    var valueSelected=this.value;
+    console.log(valueSelected);
+    $.ajax({
+  url: window.location.origin.concat('{% url 'registration:candidateList' %}?id='.concat(valueSelected)),
+  dataType: 'json',
+  success: function(data){
+    console.log(data.data.table);
+    $('#canlistdata').html(data.data.table);
+    $('#canlist').css("display","block");
+  }
+});
+ });
+</script>
+{% endblock %}

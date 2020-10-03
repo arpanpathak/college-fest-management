@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Event Registration{% endblock %}
+
+ {% block navrightitem %}
+<li><a><i class="fa fa-inr"></i>&nbsp;{{money}}</a></li>
+<li><a><span class="glyphicon glyphicon-user"></span>&nbsp;{{user}}</a></li>
+     <li><a href="{% url 'registration:logout' %}">logout</a></li>
+                {% endblock %}
+{% block body %}
+{% load staticfiles %}
+    <script src="{% static 'site/js/bootstrap-tagsinput.js' %}"></script>
+    <script src="{% static 'site/js/select2.full.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'site/css/bootstrap-tagsinput.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'site/css/select2.min.css' %}">
+<div class="col-sm-12 col-lg-6 col-lg-offset-3">
+<form class="form-horizontal center-block panel panel-default col-sm-12" method="POST" onsubmit="return formValidation()" action="{% url 'registration:eventreg'%}" style="box-shadow: 0 8px 30px rgba(0,0,0,0.3);">
+          {% csrf_token %}
+  <div class="panel-heading" style="background:  #2C3E50; color: #fff" >EVENT REGISTRATION</div>
+  <div class="panel-body" style="padding-top: 50px;">
+
+      {% for field in form %}
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <span id="errormsg"  class="text-danger small">{{ field.errors }}</span>
+        </div>
+
+        <label class="control-label col-sm-2">{{ field.label_tag }}</label>
+        <div class="col-sm-10">{{ field }}</div>
+    </div>
+{% endfor %}
+
+    <div class="form-group">
+
+
+      <div class="col-lg-10 col-lg-offset-2">
+
+          <div id="eventinfo"></div>
+          <input type="submit" name="register" class="btn btn-primary col-lg-12" value="Register">
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+ <script>
+ $(document).ready(function() {
+  $("#id_event").select2();
+  $('input[type=text]').addClass("col-sm-6 form-control");
+});
+
+var elt = $('#id_participants');
+elt.tagsinput({
+  trimValue: true,
+  confirmKeys: [13, 44,32, 188]
+});
+
+
+elt.on('itemAdded', function(event) {
+$.ajax({
+  url: window.location.origin.concat('{% url 'registration:user' %}?id='.concat(event.item)),
+  dataType: 'json',
+  success: function(data){
+      $("span.tag:contains("+event.item+")").removeClass("label-info",1000,"easeInBack");
+    if(data.resp){
+    $("span.tag:contains("+event.item+")").addClass('label-success');
+    }
+    else{
+      $("span.tag:contains("+event.item+")").addClass('label-danger');
+    }
+  }
+});
+});
+
+$("#id_event").on('change', function (e) {
+    var optionSelected=$('option:selected', this);
+    var valueSelected=this.value;
+    console.log(valueSelected);
+    $.ajax({
+
+  url: window.location.origin.concat('/event/eventDet/'.concat(valueSelected)),
+  dataType: 'json',
+  success: function(data){
+    console.log(data);
+    $('#eventinfo').html('<div class="alert alert-info"><strong>Registration fees</strong>: ₹<span>'+data.data.fees+'</span>, <strong>Maximum Member</strong>: <span>'+data.data.maxParticipant+'</span></div>');
+{#    $("#id_event").select2({#}
+{#        maximumSelectionLength:data.data.maxParticipant#}
+{#    });#}
+  }
+});
+
+});
+
+function formValidation() {
+    if($('.bootstrap-tagsinput').find($('span.label-danger')).length==0){
+        return true;
+    }
+    $('#errormsg').text('One or more user ID is invalid');
+    return false;
+}
+
+</script>
+{% endblock %}
